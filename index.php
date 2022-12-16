@@ -1,7 +1,8 @@
 <?php
 
 
-/* $cat=new Animal;
+/* 成員的使用
+ $cat=new Animal;
 
 $dog=new Animal;
 
@@ -22,10 +23,19 @@ var_dump($cat);
 echo "</pre>";
  */
 
+//方法的使用
+
+$cat=new Animal;
+$dog=new Animal;
+
+$cat->run();
+echo $cat->type;
+$cat->speed();
+
 class Animal{
-    public $type='animal';
-    public $name='John';
-    public $hair_color="brown";
+    protected $type='animal';
+    protected $name='John';
+    protected $hair_color="brown";
 
     public function __constructor(){
         //建構式內容
@@ -33,10 +43,12 @@ class Animal{
 
     public function run(){
         echo "我會跑哦";
+        $this->speed();
+        echo $this->type;
     }
 
     private function speed(){
-        echo "我會叫哦";
+        echo "我會加速哦";
     }
 
 }
