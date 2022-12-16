@@ -1,6 +1,5 @@
 <?php
 
-
 $cat=new Cat('tama','white');
 echo $cat->getType();
 echo $cat->getName();
@@ -54,6 +53,7 @@ class Animal{
     }
 
 }
+//繼承
 class Cat extends Animal{
     public function __construct($name,$color)
     {
