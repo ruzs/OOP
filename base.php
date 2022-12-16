@@ -1,5 +1,15 @@
 <?php 
 
+$Student=new DB('students');
+
+//var_dump($Student);
+
+$stus=$Student->all();
+foreach($stus as $stu){
+    echo $stu['parents'];
+    echo "<br>";
+}
+
 
 class DB{
     protected $table;
