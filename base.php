@@ -4,16 +4,16 @@ $Student=new DB('students');
 
 //var_dump($Student);
 
-// $john=$Student->find(30);
-// echo $john['name']; 
-// echo "<br>";
+$john=$Student->find(31);
+echo $john['name']; 
+echo "<br>";
 
 
 // $stus=$Student->all(['dept'=>3]);
 // foreach($stus as $stu){
-  //     echo $stu['parents'] . "=>".$stu['dept'];
-  //     echo "<br>";
-  // }
+//       echo $stu['parents'] . "=>".$stu['dept'];
+//       echo "<br>";
+//   }
 // 刪除資料
 // $Student->del(10);
 // $Student->del(['dept'=>1]);
@@ -35,27 +35,26 @@ $Student=new DB('students');
 // max
 // min
 // avg
-echo $Student->count();
-echo "<br>";
-echo $Student->sum('graduate_at');
-echo "<hr>";
-echo $Student->sum('graduate_at',['dept'=>2]);
-echo "<br>";
-$Score=new DB("student_scores");
-echo $Score->max('score');
-echo "<hr>";
-echo $Score->min('score');
-echo "<hr>";
-echo $Score->avg('score');
-echo "<hr>";
+// echo $Student->count();
+// echo "<br>";
+// echo $Student->sum('graduate_at');
+// echo "<hr>";
+// echo $Student->sum('graduate_at',['dept'=>2]);
+// echo "<br>";
+// $Score=new DB("student_scores");
+// echo $Score->max('score');
+// echo "<hr>";
+// echo $Score->min('score');
+// echo "<hr>";
+// echo $Score->avg('score');
+// echo "<hr>";
 
 class DB{
   protected $table;
   protected $dsn="mysql:host=localhost;charset=utf8;dbname=school";
   protected $pdo;
 
-  public function __construct($table)
-  {
+  public function __construct($table){
       $this->pdo=new PDO($this->dsn,'root','');
       $this->table=$table;
   }
@@ -67,11 +66,12 @@ class DB{
         if(is_array($args[0])){
           //是陣列 ['acc'=>'mack','pw'=>'1234'];
           //是陣列 ['product'=>'PC','price'=>'10000'];
-          foreach($args[0] as $key => $value){
-              $tmp[]="`$key`='$value'";
-          }
-
+          // foreach($args[0] as $key => $value){
+          //     $tmp[]="`$key`='$value'";
+          // }
+          $tmp=$this->arrayToSqlArray($args[0]);
           $sql=$sql ." WHERE ". join(" && " ,$tmp);
+          
         }else{
             //是字串
             $sql=$sql . $args[0];
@@ -94,9 +94,11 @@ class DB{
     $sql="select * from `$this->table` ";
 
     if(is_array($id)){
-      foreach($id as $key => $value){
-          $tmp[]="`$key`='$value'";
-      }
+      $tmp=$this->arrayToSqlArray($id);
+      // foreach($id as $key => $value){
+      //     $tmp[]="`$key`='$value'";
+      // }
+      dd($tmp);
       $sql = $sql . " where " . join(" && ",$tmp);
     }else{
       $sql=$sql . " where `id`='$id'";
@@ -111,9 +113,10 @@ class DB{
     $sql="delete from `$this->table` ";
 
     if(is_array($id)){
-      foreach($id as $key => $value){
-          $tmp[]="`$key`='$value'";
-      }
+      // foreach($id as $key => $value){
+      //     $tmp[]="`$key`='$value'";
+      // }
+      $tmp=$this->arrayToSqlArray($id);
       $sql = $sql . " where " . join(" && ",$tmp);
     }else{
       $sql=$sql . " where `id`='$id'";
@@ -126,17 +129,17 @@ class DB{
   function save($array){
     if(isset($array['id'])){
       //更新update
-      foreach($array as $key => $value){
-        /*if($key!='id'){
-          $tmp[]="`$key`='$value'";
-        } */
-        if($key!='id'){
-          $tmp[]="`$key`='$value'";
-        }
-      }
+      // foreach($array as $key => $value){
+      //   if($key!='id'){
+      //     $tmp[]="`$key`='$value'";
+      //   } 
+      // }
+      $id=$array['id'];
+      unset($array['id']);
+      $tmp=$this->arrayToSqlArray($array);
       $sql ="update $this->table set ";
       $sql .=join(",",$tmp);
-      $sql .=" where `id`='{$array['id']}'";
+      $sql .=" where `id`='id'";
     }else{
       //新增insert
       $cols=array_keys($array);
@@ -179,9 +182,10 @@ class DB{
   }
   private function mathSql($math,$col,...$arg){
     if(isset($arg[0][0])){
-      foreach($arg[0][0] as $key => $value){
-        $tmp[]="`$key`='$value'";
-      }
+      // foreach($arg[0][0] as $key => $value){
+      //   $tmp[]="`$key`='$value'";
+      // }
+      $tmp=$this->arrayToSqlArray($arg[0][0]);
       $sql="select $math($col) from $this->table where ";
       $sql.=join(" && ",$tmp);
     }else{
@@ -189,10 +193,29 @@ class DB{
     }
     return $sql;
   }
-  function dd($array){
-    echo "<pre>";
-    print_r($array);
-    echo "</pre>";
+  private function arrayToSqlArray($array){
+    dd($array);
+    foreach($array as $key => $value){
+      $tmp[]="`$key`='$value'";
+    }
+    return $tmp;
   }
+}
+function dd($array){
+  echo "<pre>";
+  print_r($array);
+  echo "</pre>";
+}
+//萬用sql函式
+function q($sql){
+  $dsn="mysql:host=localhost;charset=utf8;dbname=school";
+  $pdo=new PDO($dsn,'root','');
+  //echo $sql;
+  return $pdo->query($sql)->fetchAll();
+}
+
+//header函式
+function to($location){
+  header("location:$location");
 }
 ?>
