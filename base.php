@@ -4,8 +4,11 @@ $Student=new DB('students');
 
 //var_dump($Student);
 $john=$Student->find(30);
-echo $john['name'];
+echo $john['name']; 
 echo "<br>";
+
+// $Student->del(10);
+// $Student->del(['dept'=>1]);
 
 
 $stus=$Student->all(['dept'=>3]);
@@ -96,5 +99,25 @@ class DB{
                 ->query($sql)
                 ->fetch(PDO::FETCH_ASSOC);
   }
+  function del($id){
+    $sql="delete from `$this->table` ";
+
+    if(is_array($id)){
+      foreach($id as $key => $value){
+          $tmp[]="`$key`='$value'";
+      }
+      $sql = $sql . " where " . join(" && ",$tmp);
+    }else{
+      $sql=$sql . " where `id`='$id'";
+    }
+
+    echo $sql;
+    return $this->pdo->exec($sql);
+  }
+}
+function dd($array){
+  echo "<pre>";
+  print_r($array);
+  echo "</pre>";
 }
 ?>
