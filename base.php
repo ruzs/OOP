@@ -3,20 +3,38 @@
 $Student=new DB('students');
 
 //var_dump($Student);
-$john=$Student->find(30);
-echo $john['name']; 
-echo "<br>";
 
+// $john=$Student->find(30);
+// echo $john['name']; 
+// echo "<br>";
+
+
+// $stus=$Student->all(['dept'=>3]);
+// foreach($stus as $stu){
+  //     echo $stu['parents'] . "=>".$stu['dept'];
+  //     echo "<br>";
+  // }
+// 刪除資料
 // $Student->del(10);
 // $Student->del(['dept'=>1]);
 
+// 新增資料
+// $Student ->save(['name'=>'張大同','dept'=>'2','uni_id'=>'C100000218']);
+// echo "<hr>";
 
-$stus=$Student->all(['dept'=>3]);
-foreach($stus as $stu){
-    echo $stu['parents'] . "=>".$stu['dept'];
-    echo "<br>";
-}
+//更新資料
+// $Student->save(['name'=>'張大同','dept'=>2,'uni_id'=>"H22211223",'id'=>3]);
+// $stu=$Student->find(15);
+// dd($stu);
+// $stu['name']="陳秋桂";
+// $Student->save($stu);
 
+// 數學函式
+// count
+// sum
+// max
+// min
+// svg
 
 class DB{
   protected $table;
@@ -112,8 +130,33 @@ class DB{
     }
 
     echo $sql;
+    echo "<br>";
     return $this->pdo->exec($sql);
   }
+  function save($array){
+    if(isset($array['id'])){
+      //更新update
+      foreach($array as $key => $value){
+        /*if($key!='id'){
+          $tmp[]="`$key`='$value'";
+        } */
+        if($key!='id'){
+          $tmp[]="`$key`='$value'";
+        }
+      }
+      $sql ="update $this->table set ";
+      $sql .=join(",",$tmp);
+      $sql .=" where `id`='{$array['id']}'";
+    }else{
+      //新增insert
+      $cols=array_keys($array);
+      $sql="insert into $this->table (`" . join("`,`",$cols) . "`) 
+                               values('" . join("','",$array) . "')";
+      echo $sql;
+      return $this->pdo->exec($sql);
+    }
+  }
+
 }
 function dd($array){
   echo "<pre>";
