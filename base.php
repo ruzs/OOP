@@ -35,6 +35,10 @@ $Student=new DB('students');
 // max
 // min
 // svg
+// echo $Student->count(['dept'=>2]);
+echo $Student->sum('graduate_at');
+echo "<hr>";
+echo $Student->sum('graduate_at',['dept'=>2]);
 
 class DB{
   protected $table;
@@ -153,10 +157,38 @@ class DB{
       $sql="insert into $this->table (`" . join("`,`",$cols) . "`) 
                                values('" . join("','",$array) . "')";
       echo $sql;
+      echo "<br>";
       return $this->pdo->exec($sql);
     }
   }
-
+  function count($arg){
+    if (is_array($arg)) {
+      foreach ($arg as $key => $value) {
+        $tmp[]="`$key`='$value'";
+      }
+      $sql="select count(*) from $this->table where";
+      $sql.=join(" && ",$tmp);
+    } else {
+      $sql="select count($arg) from $this->table";
+    }
+    echo $sql;
+    echo "<br>";
+    return $this->pdo->query($sql)->fetchColumn();
+  }
+  function sum($col,...$arg){
+    if (isset($arg[0])) {
+      foreach ($arg[0] as $key => $value) {
+        $tmp[]="`$key`='$value'";
+      }
+      $sql="select sum($col) from $this->table where";
+      $sql.=join(" && ",$tmp);
+    } else {
+      $sql="select sum($col) from $this->table";
+    }
+    echo $sql;
+    echo "<br>";
+    return $this->pdo->query($sql)->fetchColumn();
+  }
 }
 function dd($array){
   echo "<pre>";
