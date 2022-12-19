@@ -8,9 +8,9 @@ echo $john['name'];
 echo "<br>";
 
 
-$stus=$Student->all();
+$stus=$Student->all(['dept'=>3]);
 foreach($stus as $stu){
-    echo $stu['parents'];
+    echo $stu['parents'] . "=>".$stu['dept'];
     echo "<br>";
 }
 
@@ -79,7 +79,7 @@ class DB{
 
   }
 
-  public function find($id){
+  function find($id){
     $sql="select * from `$this->table` ";
 
     if(is_array($id)){
