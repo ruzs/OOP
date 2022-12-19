@@ -89,7 +89,7 @@ class DB{
 
   }
 
-  public function find($id){
+  function find($id){
     $sql="select * from `$this->table` ";
 
     if(is_array($id)){
