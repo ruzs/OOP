@@ -108,7 +108,7 @@ class DB{
     print_r($row);
     echo "</pre>";
     $data=new stdClass;
-
+    //$data= $this->pdo->query($sql)->fetch(PDO::FETCH_OBJ);
     foreach($row as $col => $value){
       $data->{$col}=$value;
     }
